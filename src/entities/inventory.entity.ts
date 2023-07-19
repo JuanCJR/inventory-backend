@@ -6,13 +6,19 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-@Entity({ name: 'generic_entity' })
-export class GenericEntity {
+@Entity({ name: 'inventory' })
+export class Inventory {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number;
 
   @Column({ type: 'varchar', length: 100 })
-  description: string;
+  ean: string;
+
+  @Column({ type: 'varchar', length: 100 })
+  product_name: string;
+
+  @Column({ type: 'date', name: 'expires_in' })
+  expiresIn: Date;
 
   @CreateDateColumn({
     type: 'varchar',

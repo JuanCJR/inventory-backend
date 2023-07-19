@@ -7,7 +7,7 @@ import { LoggerMiddleware } from '@common/utils/logger.middleware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GenericEntity } from './entities/generic.entity';
+import { Inventory } from './entities/inventory.entity';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { GenericEntity } from './entities/generic.entity';
       })
     }),
     DatabaseModule,
-    TypeOrmModule.forFeature([GenericEntity])
+    TypeOrmModule.forFeature([Inventory])
   ],
   controllers: [AppController],
   providers: [AppService]

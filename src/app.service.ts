@@ -1,26 +1,26 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { GenericEntity } from './entities/generic.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { PageMetaDto } from '@common/dtos/page-meta.dto';
 import { PageDto } from '@common/dtos/page.dto';
 import {
-  CreateGenericDataDto,
-  GetGenericDataDto,
-  GetGenericsDataDto,
-  UpdateGenericDataDto
-} from './dtos/generic.dto';
+  CreateInventoryDto,
+  GetInventoryDto,
+  GetInventoriesDto,
+  UpdateInventoryDto
+} from './dtos/inventory.dto';
+import { Inventory } from './entities/inventory.entity';
 
 @Injectable()
 export class AppService {
   constructor(
-    @InjectRepository(GenericEntity)
-    private genericRepository: Repository<GenericEntity>
+    @InjectRepository(Inventory)
+    private inventoryRepository: Repository<Inventory>
   ) {}
 
-  async find(queryParams: GetGenericsDataDto): Promise<PageDto<GenericEntity>> {
+  async find(queryParams: GetInventoriesDto): Promise<PageDto<Inventory>> {
     const { order, take, page } = queryParams;
-    const [data, itemCount] = await this.genericRepository.findAndCount({
+    const [data, itemCount] = await this.inventoryRepository.findAndCount({
       order: { id: order },
       skip: (page - 1) * take,
       take: take
@@ -37,36 +37,36 @@ export class AppService {
     };
   }
 
-  async findOne({ id }: GetGenericDataDto): Promise<GenericEntity> {
-    const data: GenericEntity = await this.genericRepository.findOne({
+  async findOne({ id }: GetInventoryDto): Promise<Inventory> {
+    const data: Inventory = await this.inventoryRepository.findOne({
       where: { id }
     });
 
-    !data && new BadRequestException('Generic data not found');
+    !data && new BadRequestException('Inventory data not found');
 
     return data;
   }
 
-  async create(payload: CreateGenericDataDto): Promise<GenericEntity> {
-    const newData: GenericEntity = this.genericRepository.create(payload);
+  async create(payload: CreateInventoryDto): Promise<Inventory> {
+    const newData: Inventory = this.inventoryRepository.create(payload);
 
-    return await this.genericRepository.save(newData);
+    return await this.inventoryRepository.save(newData);
   }
 
   async update(
-    params: GetGenericDataDto,
-    payload: UpdateGenericDataDto
-  ): Promise<GenericEntity> {
-    const data: GenericEntity = await this.findOne(params);
+    params: GetInventoryDto,
+    payload: UpdateInventoryDto
+  ): Promise<Inventory> {
+    const data: Inventory = await this.findOne(params);
 
-    const uptatedData = this.genericRepository.merge(data, payload);
+    const uptatedData = this.inventoryRepository.merge(data, payload);
 
-    return await this.genericRepository.save(uptatedData);
+    return await this.inventoryRepository.save(uptatedData);
   }
 
-  async delete(params: GetGenericDataDto): Promise<DeleteResult> {
-    const data: GenericEntity = await this.findOne(params);
+  async delete(params: GetInventoryDto): Promise<DeleteResult> {
+    const data: Inventory = await this.findOne(params);
 
-    return await this.genericRepository.delete({ id: data.id });
+    return await this.inventoryRepository.delete({ id: data.id });
   }
 }

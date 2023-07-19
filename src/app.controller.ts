@@ -13,11 +13,11 @@ import { ApiOkResponsePaginated } from './decorators/ApiOkResponsePaginated';
 import { GenericInterface } from './interfaces/generic.interfaces';
 import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
-  CreateGenericDataDto,
-  GetGenericDataDto,
-  GetGenericsDataDto,
-  UpdateGenericDataDto
-} from './dtos/generic.dto';
+  CreateInventoryDto,
+  GetInventoryDto,
+  GetInventoriesDto,
+  UpdateInventoryDto
+} from './dtos/inventory.dto';
 import { ErrorDefault } from '@common/interfaces/error.interface';
 
 @ApiResponse({ status: '4XX', type: ErrorDefault })
@@ -30,33 +30,33 @@ export class AppController {
   @Get()
   @ApiOkResponsePaginated(GenericInterface)
   @Get()
-  async find(@Query() queryParams: GetGenericsDataDto) {
+  async find(@Query() queryParams: GetInventoriesDto) {
     return await this.appService.find(queryParams);
   }
 
   @ApiOkResponse({ type: GenericInterface })
   @Get(':id')
-  async findOne(@Param() params: GetGenericDataDto) {
+  async findOne(@Param() params: GetInventoryDto) {
     return await this.appService.findOne(params);
   }
 
   @ApiOkResponse({ type: GenericInterface })
   @Post()
-  async create(@Body() payload: CreateGenericDataDto) {
+  async create(@Body() payload: CreateInventoryDto) {
     return await this.appService.create(payload);
   }
 
   @ApiOkResponse({ type: GenericInterface })
   @Put(':id')
   async update(
-    @Param() params: GetGenericDataDto,
-    @Body() payload: UpdateGenericDataDto
+    @Param() params: GetInventoryDto,
+    @Body() payload: UpdateInventoryDto
   ) {
     return this.appService.update(params, payload);
   }
 
   @Delete(':id')
-  async delete(@Param() params: GetGenericDataDto) {
+  async delete(@Param() params: GetInventoryDto) {
     return this.appService.delete(params);
   }
 }
