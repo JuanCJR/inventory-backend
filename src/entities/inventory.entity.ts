@@ -14,11 +14,14 @@ export class Inventory {
   @Column({ type: 'varchar', length: 100 })
   ean: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  product_name: string;
+  @Column({ type: 'varchar', length: 100, name: 'product_name' })
+  productName: string;
 
   @Column({ type: 'date', name: 'expires_in' })
   expiresIn: Date;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  state: string;
 
   @CreateDateColumn({
     type: 'varchar',

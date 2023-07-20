@@ -26,7 +26,7 @@ export class CreateInventoryDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  product_name: string;
+  productName: string;
 
   @ApiProperty()
   @IsDate()
