@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { PageMetaDto } from '@common/dtos/page-meta.dto';
@@ -7,7 +11,8 @@ import {
   CreateInventoryDto,
   GetInventoryDto,
   GetInventoriesDto,
-  UpdateInventoryDto
+  UpdateInventoryDto,
+  GetInventoryByEanDto
 } from './dtos/inventory.dto';
 import { Inventory } from './entities/inventory.entity';
 
@@ -42,7 +47,20 @@ export class AppService {
       where: { id }
     });
 
-    !data && new BadRequestException('Inventory data not found');
+    if (!data) {
+      throw new NotFoundException('Inventory data not found');
+    }
+    return data;
+  }
+
+  async findByEan({ ean }: GetInventoryByEanDto): Promise<Inventory> {
+    const data: Inventory = await this.inventoryRepository.findOne({
+      where: { ean }
+    });
+
+    if (!data) {
+      throw new NotFoundException('Inventory data not found');
+    }
 
     return data;
   }

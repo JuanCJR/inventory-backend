@@ -17,6 +17,13 @@ export class GetInventoryDto {
   id: number;
 }
 
+export class GetInventoryByEanDto {
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  ean: string;
+}
+
 export class CreateInventoryDto {
   @ApiProperty()
   @IsString()

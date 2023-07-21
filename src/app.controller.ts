@@ -16,7 +16,8 @@ import {
   CreateInventoryDto,
   GetInventoryDto,
   GetInventoriesDto,
-  UpdateInventoryDto
+  UpdateInventoryDto,
+  GetInventoryByEanDto
 } from './dtos/inventory.dto';
 import { ErrorDefault } from '@common/interfaces/error.interface';
 
@@ -38,6 +39,12 @@ export class AppController {
   @Get(':id')
   async findOne(@Param() params: GetInventoryDto) {
     return await this.appService.findOne(params);
+  }
+
+  @ApiOkResponse({ type: GenericInterface })
+  @Get('/ean/:ean')
+  async findByEan(@Param() params: GetInventoryByEanDto) {
+    return await this.appService.findByEan(params);
   }
 
   @ApiOkResponse({ type: GenericInterface })
