@@ -8,11 +8,16 @@ import {
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as fs from 'fs';
 import { LoggerWinston } from '@common/utils/logger';
+import { sh } from '@common/utils/sh.util';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: new LoggerWinston()
   });
+
+  if (process.env.NODE_ENV !== 'local') {
+    await sh('npm run migrations:run');
+  }
 
   app.setGlobalPrefix('api/inventory/v1');
 

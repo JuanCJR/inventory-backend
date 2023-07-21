@@ -1,8 +1,7 @@
 ### Obtiene productos del inventario
 GET http://localhost:8000/api/inventory/v1?page=1&take=8
 
-
-
+http://inventory-backend:8000/api/inventory/v1?page=1&take=8
 ### Obtiene productos del inventario
 GET http://localhost:8000/api/inventory/v1/alert/?page=1&take=8
 
