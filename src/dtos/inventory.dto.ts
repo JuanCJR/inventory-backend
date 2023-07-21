@@ -39,6 +39,11 @@ export class CreateInventoryDto {
   @IsDate()
   @IsNotEmpty()
   expiresIn: Date;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  daysBeforeRemove: number;
 }
 
 export class UpdateInventoryDto extends PartialType(CreateInventoryDto) {}

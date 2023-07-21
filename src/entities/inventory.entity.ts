@@ -1,3 +1,4 @@
+import { Expose } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
@@ -20,8 +21,19 @@ export class Inventory {
   @Column({ type: 'date', name: 'expires_in' })
   expiresIn: Date;
 
+  @Column({ type: 'date', name: 'remove_date', nullable: true })
+  removeDate: Date;
+
   @Column({ type: 'varchar', length: 100, nullable: true })
   state: string;
+
+  @Column({ type: 'int', nullable: true, name: 'days_before_remove' })
+  daysBeforeRemove: number;
+
+  @Expose()
+  get leftDaysToRemove() {
+    return new Date(this.removeDate).getDate() - new Date().getDate();
+  }
 
   @CreateDateColumn({
     type: 'varchar',

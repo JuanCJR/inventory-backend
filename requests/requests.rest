@@ -2,12 +2,17 @@
 GET http://localhost:8000/api/inventory/v1?page=1&take=8
 
 
+
+### Obtiene productos del inventario
+GET http://localhost:8000/api/inventory/v1/alert/?page=1&take=8
+
+
 ### Obtiene un producto del inventario
 GET http://localhost:8000/api/inventory/v1/1
 
 
 ### Obtiene un producto del inventario por ean
-GET http://localhost:8000/api/inventory/v1/ean/178020139968
+GET http://localhost:8000/api/inventory/v1/ean/2780201379621
 
 ### Registra producto en inventario
 POST http://localhost:8000/api/inventory/v1
@@ -16,7 +21,8 @@ Content-Type: application/json
 {
     "ean":"3234567890123",
     "productName":"Producto 3",
-    "expiresIn":"2021-12-31"
+    "expiresIn":"2022-7-20",
+    "daysBeforeRemove":"3"
 }
 
 ### actualiza producto en inventario
@@ -24,10 +30,10 @@ PUT http://localhost:8000/api/inventory/v1/2
 Content-Type: application/json
 
 {
-    "ean":"2234567890123",
-    "product_name":"Producto 2"
+      "expiresIn":"2022-7-26",
+
 }
 
 ### Elimina un producto del inventario
-DELETE http://localhost:8000/api/inventory/v1/9
+DELETE http://localhost:8000/api/inventory/v1/11
 

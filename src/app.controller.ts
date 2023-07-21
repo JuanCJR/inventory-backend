@@ -28,11 +28,16 @@ import { ErrorDefault } from '@common/interfaces/error.interface';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
   @ApiOkResponsePaginated(GenericInterface)
   @Get()
   async find(@Query() queryParams: GetInventoriesDto) {
     return await this.appService.find(queryParams);
+  }
+
+  @ApiOkResponsePaginated(GenericInterface)
+  @Get('/alert')
+  async findProductWithAlert(@Query() queryParams: GetInventoriesDto) {
+    return await this.appService.findProductWithAlert(queryParams);
   }
 
   @ApiOkResponse({ type: GenericInterface })

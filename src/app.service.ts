@@ -4,7 +4,7 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, In, Not, Repository } from 'typeorm';
 import { PageMetaDto } from '@common/dtos/page-meta.dto';
 import { PageDto } from '@common/dtos/page.dto';
 import {
@@ -22,6 +22,28 @@ export class AppService {
     @InjectRepository(Inventory)
     private inventoryRepository: Repository<Inventory>
   ) {}
+
+  async findProductWithAlert(
+    queryParams: GetInventoriesDto
+  ): Promise<PageDto<Inventory>> {
+    const { order, take, page } = queryParams;
+    const [data, itemCount] = await this.inventoryRepository.findAndCount({
+      where: { state: Not('En buen estado') },
+      order: { id: order },
+      skip: (page - 1) * take,
+      take: take
+    });
+
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: queryParams
+    });
+
+    return {
+      data: data,
+      meta: pageMetaDto
+    };
+  }
 
   async find(queryParams: GetInventoriesDto): Promise<PageDto<Inventory>> {
     const { order, take, page } = queryParams;
@@ -65,9 +87,31 @@ export class AppService {
     return data;
   }
 
-  async create(payload: CreateInventoryDto): Promise<Inventory> {
-    const newData: Inventory = this.inventoryRepository.create(payload);
+  async create(payload: CreateInventoryDto) {
+    const product = await this.inventoryRepository.findOne({
+      where: { ean: payload.ean }
+    });
 
+    if (product) {
+      throw new BadRequestException('Product already exists');
+    }
+
+    const newData: Inventory = this.inventoryRepository.create(payload);
+    const { daysBeforeRemove, expiresIn } = newData;
+    const removeDate = new Date(expiresIn);
+    removeDate.setDate(removeDate.getDate() - daysBeforeRemove);
+    newData.removeDate = removeDate;
+    const leftDaysToRemove =
+      new Date(removeDate).getDate() - new Date().getDate();
+    if (leftDaysToRemove <= daysBeforeRemove) {
+      if (leftDaysToRemove < 0) {
+        newData.state = 'Caducado';
+      } else {
+        newData.state = 'A punto de caducar';
+      }
+    } else {
+      newData.state = 'En buen estado';
+    }
     return await this.inventoryRepository.save(newData);
   }
 
