@@ -15,6 +15,7 @@ import {
   GetInventoryByEanDto
 } from './dtos/inventory.dto';
 import { Inventory } from './entities/inventory.entity';
+import { DateTime } from 'luxon';
 
 @Injectable()
 export class AppService {
@@ -98,11 +99,13 @@ export class AppService {
 
     const newData: Inventory = this.inventoryRepository.create(payload);
     const { daysBeforeRemove, expiresIn } = newData;
-    const removeDate = new Date(expiresIn);
-    removeDate.setDate(removeDate.getDate() - daysBeforeRemove);
-    newData.removeDate = removeDate;
-    const leftDaysToRemove =
-      new Date(removeDate).getDate() - new Date().getDate();
+    let removeDate = DateTime.fromJSDate(expiresIn);
+    removeDate = removeDate.minus({ days: daysBeforeRemove });
+    newData.removeDate = removeDate.toJSDate();
+    const now = DateTime.fromISO(new Date().toISOString());
+    const leftDaysToRemove = now.diff(removeDate, 'days').days;
+    console.log(leftDaysToRemove);
+
     if (leftDaysToRemove <= daysBeforeRemove) {
       if (leftDaysToRemove < 0) {
         newData.state = 'Caducado';

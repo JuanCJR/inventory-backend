@@ -18,10 +18,10 @@ POST http://localhost:8000/api/inventory/v1
 Content-Type: application/json
 
 {
-    "ean":"3234567890123",
+    "ean":"323456789013222331111",
     "productName":"Producto 3",
-    "expiresIn":"2022-7-20",
-    "daysBeforeRemove":"3"
+    "expiresIn":"2023-3-11",
+    "daysBeforeRemove":"7"
 }
 
 ### actualiza producto en inventario

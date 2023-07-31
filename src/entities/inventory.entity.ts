@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
-
+import { DateTime } from 'luxon';
 @Entity({ name: 'inventory' })
 export class Inventory {
   @PrimaryGeneratedColumn({ type: 'int' })
@@ -32,7 +32,11 @@ export class Inventory {
 
   @Expose()
   get leftDaysToRemove() {
-    return new Date(this.removeDate).getDate() - new Date().getDate();
+    const removeDate = DateTime.fromISO(
+      new Date(this.removeDate).toISOString()
+    );
+    const now = DateTime.fromISO(new Date().toISOString());
+    return now.diff(removeDate, 'days').days.toFixed(0);
   }
 
   @CreateDateColumn({
