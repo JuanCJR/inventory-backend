@@ -18,9 +18,9 @@ POST http://localhost:8000/api/inventory/v1
 Content-Type: application/json
 
 {
-    "ean":"323456789013222331111",
+    "ean":"124",
     "productName":"Producto 3",
-    "expiresIn":"2023-3-11",
+    "expiresIn":"2023-9-11",
     "daysBeforeRemove":"7"
 }
 
@@ -36,3 +36,5 @@ Content-Type: application/json
 ### Elimina un producto del inventario
 DELETE http://localhost:8000/api/inventory/v1/11
 
+### Elimina un producto del inventario
+DELETE https://34.176.206.87/api/inventory/v1/4

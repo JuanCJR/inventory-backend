@@ -36,7 +36,7 @@ export class Inventory {
       new Date(this.removeDate).toISOString()
     );
     const now = DateTime.fromISO(new Date().toISOString());
-    return now.diff(removeDate, 'days').days.toFixed(0);
+    return removeDate.diff(now, 'days').days.toFixed(0);
   }
 
   @CreateDateColumn({
