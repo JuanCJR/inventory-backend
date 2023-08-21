@@ -8,6 +8,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Inventory } from './entities/inventory.entity';
+import { Store } from './entities/store.entity';
+import { User } from './entities/user.entity';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { Inventory } from './entities/inventory.entity';
       })
     }),
     DatabaseModule,
-    TypeOrmModule.forFeature([Inventory])
+    TypeOrmModule.forFeature([Inventory, User, Store])
   ],
   controllers: [AppController],
   providers: [AppService]

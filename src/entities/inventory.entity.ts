@@ -3,10 +3,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 import { DateTime } from 'luxon';
+import { Store } from './store.entity';
 @Entity({ name: 'inventory' })
 export class Inventory {
   @PrimaryGeneratedColumn({ type: 'int' })
@@ -52,4 +55,8 @@ export class Inventory {
     name: 'updated_at'
   })
   updatedAt: Date;
+
+  @ManyToOne(() => Store, (Store) => Store.inventory)
+  @JoinColumn({ name: 'store_id' })
+  store: Store;
 }

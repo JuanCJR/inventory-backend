@@ -44,6 +44,10 @@ export class CreateInventoryDto {
   @IsNumber()
   @IsPositive()
   daysBeforeRemove: number;
+
+  @IsNumber()
+  @ApiProperty()
+  store_id: number;
 }
 
 export class UpdateInventoryDto extends PartialType(CreateInventoryDto) {}

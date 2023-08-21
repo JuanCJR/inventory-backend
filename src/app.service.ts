@@ -16,12 +16,31 @@ import {
 } from './dtos/inventory.dto';
 import { Inventory } from './entities/inventory.entity';
 import { DateTime } from 'luxon';
+import { Store } from './entities/store.entity';
+import { User } from './entities/user.entity';
+import {
+  GetStoresDto,
+  GetStoreDto,
+  CreateStoreDto,
+  UpdateStoreDto
+} from './dtos/store.dto';
+import {
+  GetUsersDto,
+  GetUserDto,
+  CreateUserDto,
+  UpdateUserDto,
+  LoginDto
+} from './dtos/user.dto';
 
 @Injectable()
 export class AppService {
   constructor(
     @InjectRepository(Inventory)
-    private inventoryRepository: Repository<Inventory>
+    private inventoryRepository: Repository<Inventory>,
+    @InjectRepository(Store)
+    private storeRepository: Repository<Store>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>
   ) {}
 
   async findProductWithAlert(
@@ -97,7 +116,11 @@ export class AppService {
       throw new BadRequestException('Product already exists');
     }
 
+    const store = await this.findOneStore({ id: payload.store_id });
+
     const newData: Inventory = this.inventoryRepository.create(payload);
+    newData.store = store;
+
     const { daysBeforeRemove, expiresIn } = newData;
     let removeDate = DateTime.fromJSDate(expiresIn);
     removeDate = removeDate.minus({ days: daysBeforeRemove });
@@ -133,5 +156,124 @@ export class AppService {
     const data: Inventory = await this.findOne(params);
 
     return await this.inventoryRepository.delete({ id: data.id });
+  }
+
+  ///Store Service
+
+  async findStores(queryParams: GetStoresDto): Promise<PageDto<Store>> {
+    const { order, take, page } = queryParams;
+    const [data, itemCount] = await this.storeRepository.findAndCount({
+      order: { id: order },
+      skip: (page - 1) * take,
+      take: take
+    });
+
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: queryParams
+    });
+
+    return {
+      data: data,
+      meta: pageMetaDto
+    };
+  }
+
+  async findOneStore({ id }: GetStoreDto): Promise<Store> {
+    const data: Store = await this.storeRepository.findOne({
+      where: { id }
+    });
+
+    !data && new BadRequestException('Generic data not found');
+
+    return data;
+  }
+
+  async createStore(payload: CreateStoreDto): Promise<Store> {
+    const newData: Store = this.storeRepository.create(payload);
+
+    return await this.storeRepository.save(newData);
+  }
+
+  async updateStore(
+    params: GetStoreDto,
+    payload: UpdateStoreDto
+  ): Promise<Store> {
+    const data: Store = await this.findOneStore(params);
+
+    const uptatedData = this.storeRepository.merge(data, payload);
+
+    return await this.storeRepository.save(uptatedData);
+  }
+
+  async deleteStore(params: GetStoreDto): Promise<DeleteResult> {
+    const data: Store = await this.findOneStore(params);
+
+    return await this.storeRepository.delete({ id: data.id });
+  }
+
+  /// User Service
+
+  async findUser(queryParams: GetUsersDto): Promise<PageDto<User>> {
+    const { order, take, page } = queryParams;
+    const [data, itemCount] = await this.userRepository.findAndCount({
+      order: { id: order },
+      skip: (page - 1) * take,
+      take: take
+    });
+
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: queryParams
+    });
+
+    return {
+      data: data,
+      meta: pageMetaDto
+    };
+  }
+
+  async findOneUser({ id }: GetUserDto): Promise<User> {
+    const data: User = await this.userRepository.findOne({
+      where: { id }
+    });
+
+    !data && new BadRequestException('Generic data not found');
+
+    return data;
+  }
+
+  async createUser(payload: CreateUserDto): Promise<User> {
+    const store = await this.findOneStore({ id: payload.store_id });
+
+    const newData: User = this.userRepository.create(payload);
+    newData.store = store;
+
+    return await this.userRepository.save(newData);
+  }
+
+  async updateUser(params: GetUserDto, payload: UpdateUserDto): Promise<User> {
+    const data: User = await this.findOneUser(params);
+
+    const uptatedData = this.userRepository.merge(data, payload);
+
+    return await this.userRepository.save(uptatedData);
+  }
+
+  async deleteUser(params: GetUserDto): Promise<DeleteResult> {
+    const data: User = await this.findOneUser(params);
+
+    return await this.userRepository.delete({ id: data.id });
+  }
+
+  async login({ username, password }: LoginDto): Promise<User> {
+    const data: User = await this.userRepository.findOne({
+      relations: ['store'],
+      where: { username, password }
+    });
+
+    !data && new BadRequestException('Generic data not found');
+    delete data.password;
+    return data;
   }
 }
