@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -123,7 +125,7 @@ export class AppController {
   @ApiOkResponsePaginated(GenericInterface)
   @Get('user')
   async findUsers(@Query() queryParams: GetUsersDto) {
-    return await this.appService.find(queryParams);
+    return await this.appService.findUser(queryParams);
   }
 
   @ApiOkResponse({ type: GenericInterface })
@@ -153,6 +155,7 @@ export class AppController {
   }
 
   @Post('login')
+  @HttpCode(200)
   async login(@Body() payload: LoginDto) {
     return this.appService.login(payload);
   }

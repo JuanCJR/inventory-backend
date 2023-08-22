@@ -48,7 +48,10 @@ export class AppService {
   ): Promise<PageDto<Inventory>> {
     const { order, take, page } = queryParams;
     const [data, itemCount] = await this.inventoryRepository.findAndCount({
-      where: { state: Not('En buen estado') },
+      where: {
+        state: Not('En buen estado'),
+        store: { id: queryParams.store_id }
+      },
       order: { id: order },
       skip: (page - 1) * take,
       take: take
@@ -68,6 +71,7 @@ export class AppService {
   async find(queryParams: GetInventoriesDto): Promise<PageDto<Inventory>> {
     const { order, take, page } = queryParams;
     const [data, itemCount] = await this.inventoryRepository.findAndCount({
+      where: { store: { id: queryParams.store_id } },
       order: { id: order },
       skip: (page - 1) * take,
       take: take
@@ -219,7 +223,8 @@ export class AppService {
     const [data, itemCount] = await this.userRepository.findAndCount({
       order: { id: order },
       skip: (page - 1) * take,
-      take: take
+      take: take,
+      relations: ['store']
     });
 
     const pageMetaDto = new PageMetaDto({
@@ -235,7 +240,8 @@ export class AppService {
 
   async findOneUser({ id }: GetUserDto): Promise<User> {
     const data: User = await this.userRepository.findOne({
-      where: { id }
+      where: { id },
+      relations: ['store']
     });
 
     !data && new BadRequestException('Generic data not found');
@@ -255,6 +261,11 @@ export class AppService {
   async updateUser(params: GetUserDto, payload: UpdateUserDto): Promise<User> {
     const data: User = await this.findOneUser(params);
 
+    if (payload.store_id) {
+      const store = await this.findOneStore({ id: payload.store_id });
+      data.store = store;
+    }
+
     const uptatedData = this.userRepository.merge(data, payload);
 
     return await this.userRepository.save(uptatedData);
@@ -271,8 +282,9 @@ export class AppService {
       relations: ['store'],
       where: { username, password }
     });
-
-    !data && new BadRequestException('Generic data not found');
+    if (!data) {
+      throw new BadRequestException('Generic data not found');
+    }
     delete data.password;
     return data;
   }

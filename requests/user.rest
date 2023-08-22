@@ -9,6 +9,13 @@ Content-Type: application/json
 }
 
 
+###get users
+GET http://localhost:8000/api/inventory/v1/user
+
+
+###get user
+GET http://localhost:8000/api/inventory/v1/user/1
+
 ###Login
 POST http://localhost:8000/api/inventory/v1/login
 Content-Type: application/json

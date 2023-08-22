@@ -8,7 +8,11 @@ import {
   IsString
 } from 'class-validator';
 
-export class GetInventoriesDto extends PageOptionsDto {}
+export class GetInventoriesDto extends PageOptionsDto {
+  @ApiProperty()
+  @IsNumber()
+  store_id: number;
+}
 
 export class GetInventoryDto {
   @ApiProperty()
