@@ -51,7 +51,6 @@ export class CreateInventoryDto {
 
   @ApiProperty()
   @IsString()
-  @IsPositive()
   quantity: string;
 
   @IsNumber()
