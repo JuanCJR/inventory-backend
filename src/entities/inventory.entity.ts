@@ -34,7 +34,7 @@ export class Inventory {
   daysBeforeRemove: number;
 
   @Column({ type: 'int', nullable: true, default: 1 })
-  quantity: number;
+  quantity: string;
 
   @Expose()
   get leftDaysToRemove() {

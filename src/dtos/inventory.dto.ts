@@ -50,9 +50,9 @@ export class CreateInventoryDto {
   daysBeforeRemove: number;
 
   @ApiProperty()
-  @IsNumber()
+  @IsString()
   @IsPositive()
-  quantity: number;
+  quantity: string;
 
   @IsNumber()
   @ApiProperty()
