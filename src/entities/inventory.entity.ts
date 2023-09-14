@@ -33,6 +33,9 @@ export class Inventory {
   @Column({ type: 'int', nullable: true, name: 'days_before_remove' })
   daysBeforeRemove: number;
 
+  @Column({ type: 'int', nullable: true })
+  quantity: number;
+
   @Expose()
   get leftDaysToRemove() {
     const removeDate = DateTime.fromISO(

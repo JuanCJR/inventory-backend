@@ -49,6 +49,11 @@ export class CreateInventoryDto {
   @IsPositive()
   daysBeforeRemove: number;
 
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  quantity: number;
+
   @IsNumber()
   @ApiProperty()
   store_id: number;
