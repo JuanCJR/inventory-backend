@@ -33,7 +33,7 @@ export class Inventory {
   @Column({ type: 'int', nullable: true, name: 'days_before_remove' })
   daysBeforeRemove: number;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'int', nullable: true, default: 1 })
   quantity: number;
 
   @Expose()
