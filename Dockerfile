@@ -1,5 +1,5 @@
 #RESCATA IMAGEN DE NODE
-FROM node:16-alpine
+FROM node:16
 
 
 #CREA DIRECTORIO Y/O SE POSICIONS EN EL
@@ -22,4 +22,4 @@ RUN chmod +x entrypoint.sh
 EXPOSE 8081
 
 #Configure this container for running as an executable.
-CMD [ "npm", "run" ,"start:prod" ]
+ENTRYPOINT [ "/var/app/entrypoint.sh" ]
