@@ -22,4 +22,4 @@ RUN chmod +x entrypoint.sh
 EXPOSE 8081
 
 #Configure this container for running as an executable.
-ENTRYPOINT [ "/var/app/entrypoint.sh" ]
+CMD [ "npm", "run" ,"start:prod" ]
