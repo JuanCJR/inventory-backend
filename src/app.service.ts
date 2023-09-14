@@ -113,7 +113,7 @@ export class AppService {
 
   async create(payload: CreateInventoryDto) {
     const product = await this.inventoryRepository.findOne({
-      where: { ean: payload.ean }
+      where: { ean: payload.ean, store: { id: payload.store_id } }
     });
 
     if (product) {
