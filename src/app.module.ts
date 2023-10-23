@@ -10,7 +10,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Inventory } from './entities/inventory.entity';
 import { Store } from './entities/store.entity';
 import { User } from './entities/user.entity';
-
+import { DataSource } from 'typeorm';
+import { evaluaProducts } from './database/evaluaProducts';
+import { schedule } from 'node-cron';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -35,5 +37,15 @@ import { User } from './entities/user.entity';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+  constructor(datasource: DataSource) {
+    evaluaProducts(datasource);
+    schedule('0 0 0 * * *', async () => {
+      await evaluaProducts(datasource);
+      Logger.log({
+        level: 'info',
+        service: 'schedule evaluate products'
+      });
+    });
   }
 }

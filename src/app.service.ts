@@ -131,7 +131,6 @@ export class AppService {
     newData.removeDate = removeDate.toJSDate();
     const now = DateTime.fromISO(new Date().toISOString());
     const leftDaysToRemove = removeDate.diff(now, 'days').days;
-    console.log(leftDaysToRemove);
 
     if (leftDaysToRemove <= daysBeforeRemove) {
       if (leftDaysToRemove < 0) {
